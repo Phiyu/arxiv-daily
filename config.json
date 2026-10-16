@@ -1,0 +1,15 @@
+{
+  "site_title": "arXiv daily",
+  "site_url": "https://hongfeiy.com/arxiv-daily/",
+  "categories": {
+    "astro-ph.CO": "Cosmology and Nongalactic Astrophysics",
+    "astro-ph.GA": "Astrophysics of Galaxies",
+    "gr-qc": "General Relativity and Quantum Cosmology"
+  },
+  "include": { "new": true, "cross": true, "replace": true },
+  "summarize": { "new": true, "cross": true, "replace": false },
+  "max_summaries_per_day": 400,
+  "concurrency": 4,
+  "keep_days": 120,
+  "request_delay_seconds": 15
+}

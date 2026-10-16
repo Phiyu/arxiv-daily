@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>arXiv Daily Digest</title>
+  <meta name="description" content="Daily astro-ph.CO, astro-ph.GA and gr-qc announcements with AI summaries and a private watchlist. Maintained by Hongfei Yu.">
+  <!-- Privacy: everything is served from this site. No analytics, no third-party fonts or scripts,
+       and outbound links to arXiv carry no referrer. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="assets/app.css">
+  <script src="assets/theme.js"></script>
+</head>
+<body>
+  <a class="skip" href="#papers">Skip to papers</a>
+
+  <header class="bar">
+    <div class="bar-inner">
+      <a class="home" href="/">Hongfei Yu</a>
+      <span class="brand">arXiv daily</span>
+      <div class="bar-actions">
+        <button class="bar-btn" type="button" id="saved-btn" aria-pressed="false">Saved <span id="saved-count">0</span></button>
+        <button class="theme" type="button" id="theme-toggle" aria-label="Switch colour theme">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 3a7 7 0 0 1 0 14z" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="side" id="side" aria-label="Filters and watchlist">
+      <button class="side-toggle" type="button" id="side-toggle" aria-expanded="false" aria-controls="side-body">Filters and watchlist</button>
+      <div class="side-body" id="side-body">
+        <section class="panel">
+          <label class="field">
+            <span class="field-label">Search this day</span>
+            <input type="search" id="search" placeholder="Title, author, abstract" autocomplete="off">
+          </label>
+        </section>
+
+        <section class="panel">
+          <h2 class="panel-h">Categories</h2>
+          <div class="checks" id="cat-filters"></div>
+          <h2 class="panel-h">Listing</h2>
+          <div class="checks" id="kind-filters"></div>
+          <label class="check only">
+            <input type="checkbox" id="only-matches"><span>Only papers that match my watchlist</span>
+          </label>
+        </section>
+
+        <section class="panel watch">
+          <h2 class="panel-h">Watchlist</h2>
+          <p class="hint">Stored only in this browser. It is never sent to the server or to the AI model.</p>
+          <div class="watch-group">
+            <span class="field-label">Keywords</span>
+            <ul class="chips" id="kw-list"></ul>
+            <form class="add" id="kw-form" autocomplete="off">
+              <input id="kw-input" placeholder="e.g. bispectrum, /f_?NL/" aria-label="Add a keyword">
+              <button type="submit">Add</button>
+            </form>
+          </div>
+          <div class="watch-group">
+            <span class="field-label">Authors</span>
+            <ul class="chips" id="au-list"></ul>
+            <form class="add" id="au-form" autocomplete="off">
+              <input id="au-input" placeholder="e.g. Komatsu, E." aria-label="Add an author">
+              <button type="submit">Add</button>
+            </form>
+          </div>
+          <div class="watch-io">
+            <button type="button" id="export-btn">Export</button>
+            <button type="button" id="import-btn">Import</button>
+            <input type="file" id="import-file" accept="application/json" hidden>
+          </div>
+        </section>
+
+        <section class="panel keys">
+          <h2 class="panel-h">Keyboard</h2>
+          <dl>
+            <div><dt><kbd>j</kbd> <kbd>k</kbd></dt><dd>next / previous paper</dd></div>
+            <div><dt><kbd>o</kbd></dt><dd>open details</dd></div>
+            <div><dt><kbd>s</kbd></dt><dd>save</dd></div>
+            <div><dt><kbd>[</kbd> <kbd>]</kbd></dt><dd>previous / next day</dd></div>
+            <div><dt><kbd>/</kbd></dt><dd>search</dd></div>
+          </dl>
+        </section>
+      </div>
+    </aside>
+
+    <main class="main" id="papers" tabindex="-1">
+      <header class="day-head" id="day-head">
+        <div class="day-nav">
+          <button class="nav-btn" type="button" id="prev-day" aria-label="Previous day">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <h1 id="day-title">Loading</h1>
+          <button class="nav-btn" type="button" id="next-day" aria-label="Next day">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <label class="day-pick">
+            <span class="sr">Choose a day</span>
+            <select id="day-select"></select>
+          </label>
+        </div>
+        <p class="day-meta" id="day-meta"></p>
+      </header>
+
+      <div id="content"><p class="empty">Loading the latest announcement…</p></div>
+    </main>
+  </div>
+
+  <footer class="foot">
+    <p>Metadata and abstracts from <a href="https://arxiv.org/" rel="noreferrer">arXiv.org</a>; thank you to arXiv for use of its open access interoperability. Summaries are machine-generated and can be wrong: read the abstract before citing.</p>
+    <p>Fetched daily from 02:00 UTC on announcement days. No cookies, no analytics, no third-party requests. Source on <a href="https://github.com/phiyu/arxiv-daily" rel="noreferrer">GitHub</a>.</p>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="assets/vendor/katex/katex.min.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>

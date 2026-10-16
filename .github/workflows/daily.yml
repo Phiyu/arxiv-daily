@@ -1,0 +1,63 @@
+name: daily digest
+
+# arXiv announces at 20:00 US Eastern, Sunday-Thursday, i.e. 00:00/01:00 UTC Monday-Friday.
+# The first attempt is at 02:00 UTC; later runs retry if the listing was late or a run failed.
+# Each run is idempotent: when nothing changed it exits without committing.
+on:
+  schedule:
+    - cron: "0 2 * * 1-5"
+    - cron: "40 2 * * 1-5"
+    - cron: "30 3 * * 1-5"
+    - cron: "30 5 * * 1-5"
+    - cron: "0 9 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Re-summarise the current day from scratch"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write          # only to commit data/; no other scopes
+
+concurrency:
+  group: daily-digest
+  cancel-in-progress: false
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Offline tests
+        run: python -m unittest discover -s tests
+
+      - name: Fetch and summarise
+        env:
+          # The key is a repository secret: masked in logs, never written to the repo.
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_BASE_URL: ${{ secrets.LLM_BASE_URL || vars.LLM_BASE_URL }}
+          LLM_PROVIDER: ${{ vars.LLM_PROVIDER || 'openai' }}
+          LLM_MODEL: ${{ vars.LLM_MODEL }}
+          SUMMARY_LANG: ${{ vars.SUMMARY_LANG || 'en' }}
+        run: python -m pipeline.run ${{ inputs.force && '--force' || '' }}
+
+      - name: Commit new data
+        run: |
+          git add data
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          # Commit as the Actions bot so no personal e-mail address is published.
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -m "data: $(date -u +%Y-%m-%d) digest"
+          git pull --rebase --quiet
+          git push
