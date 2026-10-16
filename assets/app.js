@@ -395,7 +395,7 @@
     if (!S.index.dates?.length) {
       S.index.categories = S.index.categories || {};
       render();
-      $('#content').innerHTML = `<div class="empty"><strong>The first digest has not been published yet</strong>arXiv announces new papers at 20:00 US Eastern time, Sunday to Thursday. This page fetches them from 02:00 UTC the following morning.</div>`;
+      $('#content').innerHTML = `<div class="empty"><strong>The first digest has not been published yet</strong>arXiv announces new papers at 20:00 US Eastern time, Sunday to Thursday. This page fetches them from 02:10 UTC the following morning.</div>`;
       return;
     }
     route();

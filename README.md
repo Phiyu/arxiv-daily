@@ -6,7 +6,7 @@ GitHub Pages; once the user site has a custom domain it is served at
 `https://hongfeiy.com/arxiv-daily/`.
 
 ```
-02:00 UTC (Mon–Fri) ─► GitHub Actions ─► arxiv.org/list/<cat>/new  (RSS as fallback)
+02:10 UTC (Mon–Fri) ─► GitHub Actions ─► arxiv.org/list/<cat>/new  (RSS as fallback)
                                      ─► LLM API (title + abstract only)
                                      ─► data/<date>.json, data/index.json  ─► commit
                                                                              └► GitHub Pages
@@ -16,7 +16,7 @@ GitHub Pages; once the user site has a custom domain it is served at
 
 | Step | What happens |
 |---|---|
-| Schedule | arXiv announces at 20:00 US Eastern, Sunday–Thursday (00:00/01:00 UTC Monday–Friday). The workflow first runs at **02:00 UTC** and retries at 02:40, 03:30, 05:30 and 09:00 UTC. |
+| Schedule | arXiv announces at 20:00 US Eastern, Sunday–Thursday (00:00/01:00 UTC Monday–Friday). The workflow first runs at **02:10 UTC** and retries at 02:40, 03:30, 05:30 and 09:00 UTC. |
 | Fetch | Reads `https://arxiv.org/list/<category>/new` for each category, one request every 15 s (the crawl delay in arXiv's `robots.txt`). If those pages cannot be parsed it falls back to the RSS feed, which arXiv rebuilds at midnight Eastern. Papers listed in several categories are merged. |
 | Summarise | Each new submission and cross-list gets a TL;DR, motivation, method, results and 3–5 tags. Replacements are listed but not summarised (see `config.json`). |
 | Store | One JSON file per announcement day in `data/`, plus `data/index.json`. Days older than `keep_days` (120) are pruned. |

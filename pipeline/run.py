@@ -1,6 +1,6 @@
 """Daily job: fetch the announcement, summarise, write data/<date>.json and data/index.json.
 
-Idempotent: safe to run several times per day (the workflow retries from 02:00 UTC).
+Idempotent: safe to run several times per day (the workflow retries from 02:10 UTC).
   * if arXiv has not announced anything new since the last stored day, it exits quietly;
   * if a day is partly summarised (timeout, API error), the next run fills in the gaps.
 

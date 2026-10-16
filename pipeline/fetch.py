@@ -2,7 +2,7 @@
 
 Primary source: the listing pages  https://arxiv.org/list/<cat>/new
   - refreshed at the 20:00 ET announcement (00:00/01:00 UTC), so they are ready
-    when the 02:00 UTC job starts;
+    when the 02:10 UTC job starts;
   - allowed by arxiv.org/robots.txt (/list), crawl-delay 15 s, which we respect.
 Fallback source: the RSS feed  https://rss.arxiv.org/rss/<cat>+<cat>
   - rebuilt at midnight ET (04:00/05:00 UTC), used if the listing pages fail to parse.

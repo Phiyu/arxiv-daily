@@ -1,11 +1,11 @@
 name: daily digest
 
 # arXiv announces at 20:00 US Eastern, Sunday-Thursday, i.e. 00:00/01:00 UTC Monday-Friday.
-# The first attempt is at 02:00 UTC; later runs retry if the listing was late or a run failed.
+# The first attempt is at 02:10 UTC; later runs retry if the listing was late or a run failed.
 # Each run is idempotent: when nothing changed it exits without committing.
 on:
   schedule:
-    - cron: "0 2 * * 1-5"
+    - cron: "10 2 * * 1-5"
     - cron: "40 2 * * 1-5"
     - cron: "30 3 * * 1-5"
     - cron: "30 5 * * 1-5"
